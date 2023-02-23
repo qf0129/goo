@@ -1,0 +1,14 @@
+{
+    "db_engine": "mysql",
+    "db_host": "127.0.0.1",
+    "db_port": 3306,
+    "db_user": "root",
+    "db_psd": "root",
+    "db_database": "database",
+    
+    "app_host": "127.0.0.1",
+    "app_port": 8080,
+    "app_mode": "debug",
+    "app_timeout": 10,
+    "log_level": "debug"
+}
