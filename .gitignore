@@ -15,4 +15,6 @@
 # vendor/
 
 .vscode
-config.json
+*/logs
+*.db
+./config.json

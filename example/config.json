@@ -1,10 +1,6 @@
 {
-    "db_engine": "mysql",
-    "db_host": "127.0.0.1",
-    "db_port": 3306,
-    "db_user": "root",
-    "db_psd": "root",
-    "db_database": "database",
+    "db_engine": "sqlite",
+    "db_database": "test",
     
     "app_host": "127.0.0.1",
     "app_port": 8080,

@@ -21,6 +21,12 @@ type Configuration struct {
 	AppMode    string `json:"app_mode"`
 	AppTimeout uint   `json:"app_timeout"`
 	LogLevel   string `json:"log_level"`
+
+	// 加密算法密钥
+	SecretKey string `json:"secret_key"`
+
+	// 令牌过期时间，单位秒
+	TokenExpiredTime uint `json:"token_expired_time"`
 }
 
 var Config = &Configuration{
@@ -36,6 +42,9 @@ var Config = &Configuration{
 	AppMode:    gin.DebugMode,
 	AppTimeout: 10,
 	LogLevel:   "debug",
+
+	SecretKey:        "Abcd@123",
+	TokenExpiredTime: 3600,
 }
 
 func LoadCommonConfig() {

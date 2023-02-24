@@ -5,6 +5,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
@@ -19,7 +20,6 @@ type DbOption struct {
 func ConnectDB(opts ...DbOption) {
 	var database *gorm.DB
 
-	dbUri := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", Config.DbUser, Config.DbPsd, Config.DbHost, Config.DbPort, Config.DbDatabase)
 	gormConf := &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
@@ -37,7 +37,11 @@ func ConnectDB(opts ...DbOption) {
 
 	var dbConn gorm.Dialector
 	if Config.DbEngine == "mysql" {
+		dbUri := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", Config.DbUser, Config.DbPsd, Config.DbHost, Config.DbPort, Config.DbDatabase)
 		dbConn = mysql.Open(dbUri)
+	} else if Config.DbEngine == "sqlite" {
+		dbUri := fmt.Sprintf("%s.db", Config.DbDatabase)
+		dbConn = sqlite.Open(dbUri)
 	} else {
 		logrus.Panic("InvalidDbType")
 	}

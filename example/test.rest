@@ -1,0 +1,29 @@
+# 使用此文件请求接口，需在VScode安装REST Client插件
+
+@HOST=http://127.0.0.1:8080
+
+
+###
+GET {{HOST}}/api/product
+
+###
+POST {{HOST}}/api/product
+
+{
+    "name": "apple",
+    "price": 10
+}
+
+###
+GET {{HOST}}/api/product/1
+
+###
+PUT {{HOST}}/api/product/1
+
+{
+    "name": "apple2",
+    "price": 20
+}
+
+###
+DELETE {{HOST}}/api/product/1
