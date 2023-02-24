@@ -69,9 +69,9 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var existModel T
-		err := QueryByID[T](c.Param(parentIdKey), &existModel)
+		err := QueryOneTarget[T](c.Param(parentIdKey), &existModel)
 		if err != nil {
-			RespFail(c, "QueryByIDFailed, "+err.Error())
+			RespFail(c, "QueryOneTargetFailed, "+err.Error())
 			return
 		}
 
@@ -89,7 +89,7 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 		}
 
 		var newModel T
-		QueryByID[T](c.Param(parentIdKey), &newModel)
+		QueryOneTarget[T](c.Param(parentIdKey), &newModel)
 		RespOk(c, &newModel)
 	}
 }

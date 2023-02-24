@@ -84,14 +84,22 @@ func QueryOne[T GormModel](modelId any, preload string) (any, error) {
 	ret := query.Take(&item)
 	if ret.Error != nil {
 		logrus.Error(ret.Error)
-		return nil, ret.Error
-	} else {
-		return item, nil
 	}
+	return item, ret.Error
 }
 
-func QueryByID[T GormModel](modelId any, result any) error {
-	return db.Model(new(T)).Where(map[string]any{conf.PrimaryKey: modelId}).Take(&result).Error
+func QueryOneByMap[T GormModel](option map[string]any) (any, error) {
+	var item T
+	query := db.Model(new(T)).Where(&option)
+	ret := query.Take(&item)
+	if ret.Error != nil {
+		logrus.Error(ret.Error)
+	}
+	return item, ret.Error
+}
+
+func QueryOneTarget[T GormModel](modelId any, target any) error {
+	return db.Model(new(T)).Where(map[string]any{conf.PrimaryKey: modelId}).Take(&target).Error
 }
 
 func CreateOne[T GormModel](obj any) error {
@@ -107,7 +115,7 @@ func UpdateOne[T GormModel](modelId any, params map[string]any) error {
 
 func DeleteOne[T GormModel](modelId any) error {
 	var existModel T
-	err := QueryByID[T](modelId, &existModel)
+	err := QueryOneTarget[T](modelId, &existModel)
 	if err != nil {
 		return err
 	}
