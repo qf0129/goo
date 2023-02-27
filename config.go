@@ -30,12 +30,13 @@ type Configuration struct {
 }
 
 var Config = &Configuration{
-	DbEngine:   "mysql",
+	// DbEngine:   "mysql",
+	DbEngine:   "sqlite",
 	DbHost:     "127.0.0.1",
 	DbPort:     3306,
 	DbUser:     "root",
 	DbPsd:      "root",
-	DbDatabase: "database",
+	DbDatabase: "test",
 
 	AppHost:    "127.0.0.1",
 	AppPort:    8080,
