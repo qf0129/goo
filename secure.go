@@ -12,6 +12,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var ErrTokenExpired = errors.New("TokenExpired")
+
 // 哈希密码
 func HashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -51,7 +53,7 @@ func ParseToken(token string) (string, error) {
 	nowTs := time.Now().Unix()
 
 	if nowTs > tokenTs+int64(Config.TokenExpiredTime) {
-		return "", errors.New("TokenExpired")
+		return "", ErrTokenExpired
 	}
 
 	body := string(tokenStr[8:])

@@ -39,3 +39,11 @@ func RespFail(c *gin.Context, msg string) {
 		Data: nil,
 	})
 }
+
+func RespFailWith401(c *gin.Context, msg string) {
+	Resp(c, http.StatusUnauthorized, RespBody{
+		Code: 40100,
+		Msg:  msg,
+		Data: nil,
+	})
+}
