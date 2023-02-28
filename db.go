@@ -3,6 +3,7 @@ package goo
 import (
 	"fmt"
 
+	"github.com/qf0129/goo/crud"
 	"github.com/sirupsen/logrus"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
@@ -52,6 +53,7 @@ func ConnectDB(opts ...DbOption) {
 	}
 
 	DB = database
+	crud.Init(database)
 }
 
 func MigrateModels(dst ...any) {

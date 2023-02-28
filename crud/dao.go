@@ -103,8 +103,9 @@ func QueryOneTarget[T GormModel](modelId any, target any) error {
 }
 
 func CreateOne[T GormModel](obj any) error {
-	return db.Create(obj).Error
+	return db.Model(new(T)).Create(obj).Error
 }
+
 func CreateOneWithMap[T GormModel](obj map[string]any) error {
 	return db.Model(new(T)).Create(obj).Error
 }

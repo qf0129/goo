@@ -39,6 +39,8 @@ func UserLoginHandler() gin.HandlerFunc {
 			crud.RespFail(c, "CreateTokenErr, "+err.Error())
 			return
 		}
+		c.SetCookie("tk", token, int(goo.Config.TokenExpiredTime), "/", "*", true, true)
+		c.SetCookie("username", existUser.Username, int(goo.Config.TokenExpiredTime), "/", "*", true, false)
 		crud.RespOk(c, gin.H{"token": token})
 	}
 }
