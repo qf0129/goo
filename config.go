@@ -38,7 +38,7 @@ var Config = &Configuration{
 	DbPsd:      "root",
 	DbDatabase: "test",
 
-	AppHost:    "127.0.0.1",
+	AppHost:    "",
 	AppPort:    8080,
 	AppMode:    gin.DebugMode,
 	AppTimeout: 10,
