@@ -41,11 +41,11 @@ var Config = &Configuration{
 	AppHost:    "",
 	AppPort:    8080,
 	AppMode:    gin.DebugMode,
-	AppTimeout: 10,
+	AppTimeout: 60,
 	LogLevel:   "debug",
 
 	SecretKey:        "Abcd@123",
-	TokenExpiredTime: 3600,
+	TokenExpiredTime: 7200,
 }
 
 func LoadCommonConfig() {
