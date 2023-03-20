@@ -25,6 +25,7 @@ func ConnectDB(opts ...DbOption) {
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
+		// Logger: logger.Default.LogMode(logger.Info),
 		// NowFunc: func() time.Time {
 		// 	return time.Now().Local()
 		// },

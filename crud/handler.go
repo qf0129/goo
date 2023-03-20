@@ -1,7 +1,7 @@
 package crud
 
 import (
-	"time"
+	"reflect"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
@@ -17,7 +17,7 @@ func CreateOneHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 			}
 			params[parentIdKeys[0]] = c.Param(parentIdKeys[0])
 
-			err := CreateOneWithMap[T](params)
+			err := CreateOne[T](params)
 			if err != nil {
 				RespFail(c, "CreateOneFailed, "+err.Error())
 				return
@@ -67,7 +67,6 @@ func DeleteOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 
 func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		var existModel T
 		err := QueryOneTarget[T](c.Param(parentIdKey), &existModel)
 		if err != nil {
@@ -75,14 +74,34 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 			return
 		}
 
-		var parms map[string]any
-		if err := c.ShouldBindJSON(&parms); err != nil {
-			RespFail(c, "InvalidData, "+err.Error())
-			return
+		var hasJson bool
+		// 遍历模型字段是否包含json列
+		vo := reflect.ValueOf(existModel)
+		for i := 0; i < vo.NumField(); i++ {
+			val := vo.Field(i).Interface()
+			if reflect.TypeOf(val).String() == "datatypes.JSON" {
+				hasJson = true
+			}
 		}
 
-		delete(parms, conf.PrimaryKey)
-		err = UpdateOne[T](c.Param(parentIdKey), parms)
+		if hasJson {
+			// 若包含json列，使用结构体更新，因为可以更新json值
+			var obj T
+			if err = c.ShouldBindJSON(&obj); err != nil {
+				RespFail(c, "InvalidData, "+err.Error())
+				return
+			}
+			err = UpdateOne[T](c.Param(parentIdKey), &obj)
+		} else {
+			// 否则默认使用map更新，因为结构体不更新空值
+			var objMap map[string]any
+			if err = c.ShouldBindJSON(&objMap); err != nil {
+				RespFail(c, "InvalidData, "+err.Error())
+				return
+			}
+			err = UpdateOne[T](c.Param(parentIdKey), &objMap)
+		}
+
 		if err != nil {
 			RespFail(c, "UpdateOneFailed, "+err.Error())
 			return
@@ -96,7 +115,6 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 
 func QueryPageHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		time.Sleep(700 * time.Microsecond)
 		var fixedOptions FixedOption
 		err := c.ShouldBind(&fixedOptions)
 		if err != nil {

@@ -106,11 +106,7 @@ func CreateOne[T GormModel](obj any) error {
 	return db.Model(new(T)).Create(obj).Error
 }
 
-func CreateOneWithMap[T GormModel](obj map[string]any) error {
-	return db.Model(new(T)).Create(obj).Error
-}
-
-func UpdateOne[T GormModel](modelId any, params map[string]any) error {
+func UpdateOne[T GormModel](modelId any, params any) error {
 	return db.Model(new(T)).Where(map[string]any{conf.PrimaryKey: modelId}).Updates(params).Error
 }
 
