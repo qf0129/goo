@@ -22,8 +22,6 @@ func main() {
 	app.Use(simple.CorsMiddleware())
 
 	apiGroup := app.Group("/api")
-
-	crud.Init(goo.DB)
 	crud.CreateRouter[Product](apiGroup)
 
 	goo.RunGin()

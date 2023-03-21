@@ -11,7 +11,9 @@
     "app_mode": "debug",
     "app_timeout": 10,
     "log_level": "debug",
-
+    
+	"primary_key":      "id",
+	"default_page_size": 10,
     "secret_key":"Abcd@123",
     "token_expired_time": 3600
 }

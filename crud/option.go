@@ -20,6 +20,16 @@ func PraseFilterOptions(c *gin.Context) ([]QueryOption, error) {
 	return options, nil
 }
 
+func PraseJsonFilterOptions(c *gin.Context, jsonFieldName string) ([]QueryOption, error) {
+	var options []QueryOption
+	for k := range c.Request.URL.Query() {
+		if !ArrHasStr(FIXED_OPTIONS, k) {
+			options = append(options, OptionJsonFilterBy(jsonFieldName, k, c.Query(k)))
+		}
+	}
+	return options, nil
+}
+
 func OptionPreload(field string, options ...QueryOption) QueryOption {
 	return func(tx *gorm.DB) *gorm.DB {
 		if field == "" {
@@ -57,9 +67,29 @@ func OptionOrderBy(field string, descending bool) QueryOption {
 	}
 }
 
+func OptionJsonOrderBy(field string, key string, descending bool) QueryOption {
+	text := fmt.Sprintf(" `%s` ->> '$.%s'", field, key)
+	if descending {
+		text += " desc"
+	}
+	return func(tx *gorm.DB) *gorm.DB {
+		if key == "" {
+			return tx
+		} else {
+			return tx.Order(text)
+		}
+	}
+}
+
 func OptionFilterBy(field string, value any) QueryOption {
 	return func(tx *gorm.DB) *gorm.DB {
 		return tx.Where(map[string]any{field: value})
+	}
+}
+
+func OptionJsonFilterBy(field string, key string, value any) QueryOption {
+	return func(tx *gorm.DB) *gorm.DB {
+		return tx.Where(fmt.Sprintf("%s->>'$.%s'='%s'", field, key, value))
 	}
 }
 

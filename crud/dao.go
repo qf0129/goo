@@ -3,6 +3,7 @@ package crud
 import (
 	"strings"
 
+	"github.com/qf0129/goo"
 	"github.com/sirupsen/logrus"
 )
 
@@ -10,7 +11,7 @@ func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any
 	var total int64
 	var items []T
 
-	query := db.Model(new(T))
+	query := goo.DB.Model(new(T))
 	for _, option := range filterOptions {
 		query = option(query)
 	}
@@ -31,10 +32,10 @@ func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any
 		}
 	} else {
 		if fixed.Page == 0 {
-			fixed.Page = conf.DefaultPageIndex
+			fixed.Page = 1
 		}
 		if fixed.PageSize == 0 {
-			fixed.PageSize = conf.defaultPageSize
+			fixed.PageSize = goo.Config.DefaultPageSize
 		}
 		query = OptionWithPage(fixed.Page, fixed.PageSize)(query)
 		ret := query.Find(&items)
@@ -55,7 +56,7 @@ func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any
 func QueryAll[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any, error) {
 	var items []T
 
-	query := db.Model(new(T))
+	query := goo.DB.Model(new(T))
 	for _, option := range filterOptions {
 		query = option(query)
 	}
@@ -76,7 +77,7 @@ func QueryAll[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any,
 
 func QueryOne[T GormModel](modelId any, preload string) (any, error) {
 	var item T
-	query := db.Model(new(T)).Where(map[string]any{conf.PrimaryKey: modelId})
+	query := goo.DB.Model(new(T)).Where(map[string]any{goo.Config.PrimaryKey: modelId})
 	for _, field := range strings.Split(preload, ",") {
 		query = OptionPreload(field)(query)
 	}
@@ -90,7 +91,7 @@ func QueryOne[T GormModel](modelId any, preload string) (any, error) {
 
 func QueryOneByMap[T GormModel](option map[string]any) (any, error) {
 	var item T
-	query := db.Model(new(T)).Where(&option)
+	query := goo.DB.Model(new(T)).Where(option)
 	ret := query.Take(&item)
 	if ret.Error != nil {
 		logrus.Error(ret.Error)
@@ -98,16 +99,20 @@ func QueryOneByMap[T GormModel](option map[string]any) (any, error) {
 	return item, ret.Error
 }
 
+func QueryOneTargetByMap[T GormModel](option map[string]any, target any) error {
+	return goo.DB.Model(new(T)).Where(option).Take(target).Error
+}
+
 func QueryOneTarget[T GormModel](modelId any, target any) error {
-	return db.Model(new(T)).Where(map[string]any{conf.PrimaryKey: modelId}).Take(&target).Error
+	return goo.DB.Model(new(T)).Where(map[string]any{goo.Config.PrimaryKey: modelId}).Take(&target).Error
 }
 
 func CreateOne[T GormModel](obj any) error {
-	return db.Model(new(T)).Create(obj).Error
+	return goo.DB.Model(new(T)).Create(obj).Error
 }
 
 func UpdateOne[T GormModel](modelId any, params any) error {
-	return db.Model(new(T)).Where(map[string]any{conf.PrimaryKey: modelId}).Updates(params).Error
+	return goo.DB.Model(new(T)).Where(map[string]any{goo.Config.PrimaryKey: modelId}).Updates(params).Error
 }
 
 func DeleteOne[T GormModel](modelId any) error {
@@ -116,5 +121,5 @@ func DeleteOne[T GormModel](modelId any) error {
 	if err != nil {
 		return err
 	}
-	return db.Delete(&existModel).Error
+	return goo.DB.Delete(&existModel).Error
 }

@@ -22,6 +22,9 @@ type Configuration struct {
 	AppTimeout uint   `json:"app_timeout"`
 	LogLevel   string `json:"log_level"`
 
+	PrimaryKey      string `json:"primary_key"`
+	DefaultPageSize int    `json:"default_page_size"`
+
 	// 加密算法密钥
 	SecretKey string `json:"secret_key"`
 
@@ -43,6 +46,9 @@ var Config = &Configuration{
 	AppMode:    gin.DebugMode,
 	AppTimeout: 60,
 	LogLevel:   "debug",
+
+	PrimaryKey:      "id",
+	DefaultPageSize: 10,
 
 	SecretKey:        "Abcd@123",
 	TokenExpiredTime: 7200,
