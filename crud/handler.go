@@ -133,12 +133,7 @@ func QueryPageHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 			filterOptions = append([]QueryOption{option}, filterOptions...)
 		}
 
-		var ret any
-		if fixedOptions.ClosePaging {
-			ret, err = QueryAll[T](fixedOptions, filterOptions)
-		} else {
-			ret, err = QueryPage[T](fixedOptions, filterOptions)
-		}
+		ret, err := QueryMany[T](fixedOptions, filterOptions)
 		if err != nil {
 			RespFail(c, "QueryFailed, "+err.Error())
 			return

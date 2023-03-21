@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any, error) {
+func QueryMany[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any, error) {
 	var total int64
 	var items []T
 
@@ -50,28 +50,6 @@ func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any
 				Total:    total,
 			}, nil
 		}
-	}
-}
-
-func QueryAll[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any, error) {
-	var items []T
-
-	query := goo.DB.Model(new(T))
-	for _, option := range filterOptions {
-		query = option(query)
-	}
-
-	for _, field := range strings.Split(fixed.Preload, ",") {
-		query = OptionPreload(field)(query)
-	}
-	query = OptionOrderBy(fixed.OrderBy, fixed.Descending)(query)
-
-	ret := query.Find(&items)
-	if ret.Error != nil {
-		logrus.Error(ret.Error)
-		return nil, ret.Error
-	} else {
-		return items, nil
 	}
 }
 
