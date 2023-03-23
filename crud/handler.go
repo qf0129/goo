@@ -107,7 +107,7 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 	}
 }
 
-func QueryPageHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
+func QueryManyHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var fixedOptions FixedOption
 		err := c.ShouldBind(&fixedOptions)
