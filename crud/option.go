@@ -2,6 +2,7 @@ package crud
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/text/cases"
@@ -12,9 +13,15 @@ import (
 
 func PraseFilterOptions(c *gin.Context) ([]QueryOption, error) {
 	var options []QueryOption
-	for k := range c.Request.URL.Query() {
+	for k, v := range c.Request.URL.Query() {
 		if !ArrHasStr(FIXED_OPTIONS, k) {
-			options = append(options, OptionFilterBy(k, c.Query(k)))
+			kList := strings.Split(k, ":")
+			if len(kList) == 2 {
+				k, operater := kList[0], kList[1]
+				options = append(options, GetOptionWithOperater(k, operater, v[0]))
+			} else {
+				options = append(options, OptionFilterBy(k, v))
+			}
 		}
 	}
 	return options, nil
@@ -28,6 +35,39 @@ func PraseJsonFilterOptions(c *gin.Context, jsonFieldName string) ([]QueryOption
 		}
 	}
 	return options, nil
+}
+
+func GetOptionWithOperater(key string, operater string, val string) QueryOption {
+	return func(tx *gorm.DB) *gorm.DB {
+		switch operater {
+		case "eq":
+			return tx.Where(fmt.Sprintf("`%s` = ?", key), val)
+		case "ne":
+			return tx.Where(fmt.Sprintf("`%s` != ?", key), val)
+		case "gt":
+			return tx.Where(fmt.Sprintf("`%s` > ?", key), val)
+		case "ge":
+			return tx.Where(fmt.Sprintf("`%s` >= ?", key), val)
+		case "lt":
+			return tx.Where(fmt.Sprintf("`%s` < ?", key), val)
+		case "le":
+			return tx.Where(fmt.Sprintf("`%s` <= ?", key), val)
+		case "in":
+			return tx.Where(fmt.Sprintf("`%s` in ?", key), strings.Split(val, ","))
+		case "ni":
+			return tx.Where(fmt.Sprintf("`%s` not in ?", key), strings.Split(val, ","))
+		case "ct":
+			return tx.Where(fmt.Sprintf("`%s` like '%%%s%%'", key, val))
+		case "nc":
+			return tx.Where(fmt.Sprintf("`%s` not like '%%%s%%'", key, val))
+		case "sw":
+			return tx.Where(fmt.Sprintf("`%s` like '%s%%'", key, val))
+		case "ew":
+			return tx.Where(fmt.Sprintf("`%s` like '%%%s'", key, val))
+		default:
+			return tx.Where("? = '?'", key, val)
+		}
+	}
 }
 
 func OptionPreload(field string, options ...QueryOption) QueryOption {
