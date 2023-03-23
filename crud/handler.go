@@ -1,6 +1,7 @@
 package crud
 
 import (
+	"encoding/json"
 	"reflect"
 
 	"github.com/gin-gonic/gin"
@@ -74,34 +75,27 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 			return
 		}
 
-		var hasJson bool
-		// 遍历模型字段是否包含json列
-		vo := reflect.ValueOf(existModel)
-		for i := 0; i < vo.NumField(); i++ {
-			val := vo.Field(i).Interface()
-			if reflect.TypeOf(val).String() == "datatypes.JSON" {
-				hasJson = true
+		var objMap map[string]any
+		if err = c.ShouldBindJSON(&objMap); err != nil {
+			RespFail(c, "InvalidData, "+err.Error())
+			return
+		}
+
+		// gorm中updates结构体不支持更新空值，使用map不支持json类型
+		// 因此遍历map，将子结构的map或slice转成json字符串
+		for k, v := range objMap {
+			valKind := reflect.ValueOf(v).Kind()
+			if valKind == reflect.Map || valKind == reflect.Slice {
+				bytes, err := json.Marshal(v)
+				if err != nil {
+					RespFail(c, "InvalidJsonValue, "+err.Error())
+					return
+				}
+				objMap[k] = string(bytes)
 			}
 		}
 
-		if hasJson {
-			// 若包含json列，使用结构体更新，因为可以更新json值
-			var obj T
-			if err = c.ShouldBindJSON(&obj); err != nil {
-				RespFail(c, "InvalidData, "+err.Error())
-				return
-			}
-			err = UpdateOne[T](c.Param(parentIdKey), &obj)
-		} else {
-			// 否则默认使用map更新，因为结构体不更新空值
-			var objMap map[string]any
-			if err = c.ShouldBindJSON(&objMap); err != nil {
-				RespFail(c, "InvalidData, "+err.Error())
-				return
-			}
-			err = UpdateOne[T](c.Param(parentIdKey), &objMap)
-		}
-
+		err = UpdateOne[T](c.Param(parentIdKey), &objMap)
 		if err != nil {
 			RespFail(c, "UpdateOneFailed, "+err.Error())
 			return
