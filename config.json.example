@@ -1,19 +1,21 @@
 {
-    "db_engine": "mysql",
-    "db_host": "127.0.0.1",
-    "db_port": 3306,
-    "db_user": "root",
-    "db_psd": "root",
-    "db_database": "database",
+    "DbEngine": "mysql",
+    "SqliteFile": "sqlite.db",
     
-    "app_host": "",
-    "app_port": 8080,
-    "app_mode": "debug",
-    "app_timeout": 10,
-    "log_level": "debug",
+    "DbHost": "127.0.0.1",
+    "DbPort": 3306,
+    "DbUser": "root",
+    "DbPsd": "root",
+    "DbDatabase": "database",
     
-	"primary_key":      "id",
-	"default_page_size": 10,
-    "secret_key":"Abcd@123",
-    "token_expired_time": 3600
+    "AppHost": "",
+    "AppPort": 8080,
+    "AppMode": "debug",
+    "AppTimeout": 10,
+    "LogLevel": "debug",
+    
+	"PrimaryKey":      "id",
+	"DefaultPageSize": 10,
+    "SecretKey":"Abcd@123",
+    "TokenExpiredTime": 3600
 }

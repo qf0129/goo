@@ -13,7 +13,7 @@ type Product struct {
 }
 
 func main() {
-	goo.LoadCommonConfig()
+	goo.LoadConfig()
 	goo.LoadLogger()
 	goo.ConnectDB()
 	goo.MigrateModels(&Product{})

@@ -2,39 +2,55 @@ package goo
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"os"
-
-	"github.com/gin-gonic/gin"
+	"reflect"
 )
 
 type Configuration struct {
-	DbEngine   string `json:"db_engine"`
-	DbHost     string `json:"db_host"`
-	DbPort     uint   `json:"db_port"`
-	DbUser     string `json:"db_user"`
-	DbPsd      string `json:"db_psd"`
-	DbDatabase string `json:"db_database"`
+	DbEngine   string
+	SqliteFile string
 
-	AppHost    string `json:"app_host"`
-	AppPort    uint   `json:"app_port"`
-	AppMode    string `json:"app_mode"`
-	AppTimeout uint   `json:"app_timeout"`
-	LogLevel   string `json:"log_level"`
+	DbHost     string
+	DbPort     uint
+	DbUser     string
+	DbPsd      string
+	DbDatabase string
 
-	PrimaryKey      string `json:"primary_key"`
-	DefaultPageSize int    `json:"default_page_size"`
+	AppHost    string
+	AppPort    uint
+	AppMode    string
+	AppTimeout uint
+	LogLevel   string
+
+	PrimaryKey      string
+	DefaultPageSize int
 
 	// 加密算法密钥
-	SecretKey string `json:"secret_key"`
+	SecretKey string
 
 	// 令牌过期时间，单位秒
-	TokenExpiredTime uint `json:"token_expired_time"`
+	TokenExpiredTime uint
+
+	Custom map[string]any
+}
+
+func (c *Configuration) Set(k string, v any) {
+	c.Custom[k] = v
+}
+
+func (c *Configuration) Get(k string) any {
+	return c.Custom[k]
+}
+
+func (c *Configuration) Remove(k string) {
+	delete(c.Custom, k)
 }
 
 var Config = &Configuration{
-	// DbEngine:   "mysql",
 	DbEngine:   "sqlite",
+	SqliteFile: "sqlite.db",
+
 	DbHost:     "127.0.0.1",
 	DbPort:     3306,
 	DbUser:     "root",
@@ -43,7 +59,7 @@ var Config = &Configuration{
 
 	AppHost:    "",
 	AppPort:    8080,
-	AppMode:    gin.DebugMode,
+	AppMode:    "debug",
 	AppTimeout: 60,
 	LogLevel:   "debug",
 
@@ -52,20 +68,40 @@ var Config = &Configuration{
 
 	SecretKey:        "Abcd@123",
 	TokenExpiredTime: 7200,
+
+	Custom: make(map[string]any),
 }
 
-func LoadCommonConfig() {
-	_, err := os.Stat("config.json")
-	if err == nil {
-		f, err := os.Open("config.json")
-		if err != nil {
-			log.Fatalf("open config err: %v", err)
-		}
-		defer f.Close()
-		encoder := json.NewDecoder(f)
-		err = encoder.Decode(Config)
-		if err != nil {
-			log.Fatalf("decode config err: %v", err)
+func LoadConfig() error {
+	// 读取json文件
+	data, err := os.ReadFile("config.json")
+	if err != nil {
+		fmt.Println("read json file failed, err:", err)
+		return err
+	}
+
+	// json数据解析到配置
+	err = json.Unmarshal(data, &Config)
+	if err != nil {
+		fmt.Println("json unmarshal failed, err:", err)
+		return err
+	}
+
+	// json数据解析到map
+	var m map[string]any
+	err = json.Unmarshal(data, &m)
+	if err != nil {
+		fmt.Println("json unmarshal failed, err:", err)
+		return err
+	}
+
+	// 加载json配置
+	for k, v := range m {
+		// 判断不包含的key，放到自定义配置里
+		_, ok := reflect.TypeOf(*Config).FieldByName(k)
+		if !ok {
+			Config.Set(k, v)
 		}
 	}
+	return nil
 }

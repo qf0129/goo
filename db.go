@@ -41,8 +41,7 @@ func ConnectDB(opts ...DbOption) {
 		dbUri := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", Config.DbUser, Config.DbPsd, Config.DbHost, Config.DbPort, Config.DbDatabase)
 		dbConn = mysql.Open(dbUri)
 	} else if Config.DbEngine == "sqlite" {
-		dbUri := fmt.Sprintf("%s.db", Config.DbDatabase)
-		dbConn = sqlite.Open(dbUri)
+		dbConn = sqlite.Open(Config.SqliteFile)
 	} else {
 		logrus.Panic("InvalidDbType")
 	}
