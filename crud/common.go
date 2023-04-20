@@ -3,6 +3,7 @@ package crud
 import (
 	"time"
 
+	"github.com/rs/xid"
 	"gorm.io/gorm"
 )
 
@@ -12,6 +13,18 @@ type BaseModel struct {
 	Id    uint      `gorm:"primaryKey;" json:"id" form:"id"`
 	Ctime time.Time `gorm:"autoCreateTime;comment:'Created Time'" json:"ctime"`
 	Utime time.Time `gorm:"autoUpdateTime;comment:'Updated Time'" json:"utime"`
+}
+
+type BaseUidModel struct {
+	Id    uint      `gorm:"primaryKey;" json:"id" form:"id"`
+	Uid   string    `gorm:"type:varchar(50);uniqueIndex;not null;" json:"uid"`
+	Ctime time.Time `gorm:"autoCreateTime;comment:'Created Time'" json:"ctime"`
+	Utime time.Time `gorm:"autoUpdateTime;comment:'Updated Time'" json:"utime"`
+}
+
+func (m *BaseUidModel) BeforeCreate(tx *gorm.DB) (err error) {
+	m.Uid = xid.New().String()
+	return
 }
 
 // 定义查询选项类型
