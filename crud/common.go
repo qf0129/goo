@@ -15,6 +15,10 @@ type BaseModel struct {
 	Utime time.Time `gorm:"autoUpdateTime;comment:'Updated Time'" json:"utime"`
 }
 
+type DeleteMarkModel struct {
+	Deleted bool `gorm:"index;default:false;" json:"deleted"`
+}
+
 type BaseUidModel struct {
 	Id    uint      `gorm:"primaryKey;" json:"id" form:"id"`
 	Uid   string    `gorm:"type:varchar(50);uniqueIndex;not null;" json:"uid"`
