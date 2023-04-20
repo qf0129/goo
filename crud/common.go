@@ -15,18 +15,15 @@ type BaseModel struct {
 	Utime time.Time `gorm:"autoUpdateTime;comment:'Updated Time'" json:"utime"`
 }
 
-type DeleteMarkModel struct {
-	Deleted bool `gorm:"index;default:false;" json:"deleted"`
+type CommonBaseModel struct {
+	Id      uint      `gorm:"primaryKey;" json:"id" form:"id"`
+	Uid     string    `gorm:"type:varchar(50);uniqueIndex;not null;" json:"uid"`
+	Deleted bool      `gorm:"index;default:false;" json:"deleted"`
+	Ctime   time.Time `gorm:"autoCreateTime;comment:'Created Time'" json:"ctime"`
+	Utime   time.Time `gorm:"autoUpdateTime;comment:'Updated Time'" json:"utime"`
 }
 
-type BaseUidModel struct {
-	Id    uint      `gorm:"primaryKey;" json:"id" form:"id"`
-	Uid   string    `gorm:"type:varchar(50);uniqueIndex;not null;" json:"uid"`
-	Ctime time.Time `gorm:"autoCreateTime;comment:'Created Time'" json:"ctime"`
-	Utime time.Time `gorm:"autoUpdateTime;comment:'Updated Time'" json:"utime"`
-}
-
-func (m *BaseUidModel) BeforeCreate(tx *gorm.DB) (err error) {
+func (m *CommonBaseModel) BeforeCreate(tx *gorm.DB) (err error) {
 	m.Uid = xid.New().String()
 	return
 }
