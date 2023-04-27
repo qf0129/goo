@@ -16,7 +16,7 @@ type BaseModel struct {
 }
 
 type BaseUidModel struct {
-	Id      string    `gorm:"primaryKey;" json:"id"`
+	Id      string    `gorm:"primaryKey;type:varchar(50);" json:"id"`
 	Deleted bool      `gorm:"index;default:false;" json:"deleted"`
 	Ctime   time.Time `gorm:"autoCreateTime;comment:'Created Time'" json:"ctime"`
 	Utime   time.Time `gorm:"autoUpdateTime;comment:'Updated Time'" json:"utime"`
