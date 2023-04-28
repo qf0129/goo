@@ -16,10 +16,10 @@ type BaseModel struct {
 }
 
 type BaseUidModel struct {
-	Id      string    `gorm:"primaryKey;type:varchar(50);" json:"id"`
-	Deleted bool      `gorm:"index;default:false;" json:"deleted"`
-	Ctime   time.Time `gorm:"autoCreateTime;comment:'Created Time'" json:"ctime"`
-	Utime   time.Time `gorm:"autoUpdateTime;comment:'Updated Time'" json:"utime"`
+	Id      string `gorm:"primaryKey;type:varchar(50);" json:"id"`
+	Deleted bool   `gorm:"index;default:false;" json:"deleted"`
+	Ctime   int64  `gorm:"autoCreateTime:milli;comment:'Created Time'" json:"ctime"`
+	Utime   int64  `gorm:"autoUpdateTime:milli;comment:'Updated Time'" json:"utime"`
 }
 
 func (m *BaseUidModel) BeforeCreate(tx *gorm.DB) (err error) {
