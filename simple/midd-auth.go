@@ -12,14 +12,14 @@ func RequireTokenFromCookie() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tk, err := c.Cookie(TokenKey)
 		if err != nil {
-			crud.RespFailWith401(c, err.Error())
+			crud.RespFailWith401(c, "InvalidToken: "+err.Error())
 			c.Abort()
 			return
 		}
 
 		userIdStr, err := goo.ParseToken(tk)
 		if err != nil {
-			crud.RespFailWith401(c, err.Error())
+			crud.RespFailWith401(c, "InvalidToken: "+err.Error())
 			c.Abort()
 			return
 		}
@@ -27,7 +27,7 @@ func RequireTokenFromCookie() gin.HandlerFunc {
 		existsUser := &User{}
 		err = crud.QueryOneTarget[User](userIdStr, existsUser)
 		if err != nil {
-			crud.RespFailWith401(c, err.Error())
+			crud.RespFailWith401(c, "InvalidUser: "+err.Error())
 			c.Abort()
 			return
 		}
