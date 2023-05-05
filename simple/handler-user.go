@@ -23,6 +23,16 @@ func UserLoginHandler() gin.HandlerFunc {
 			return
 		}
 
+		if req.Username == "" {
+			crud.RespFail(c, "InvalidUsername")
+			return
+		}
+
+		if req.Password == "" {
+			crud.RespFail(c, "InvalidPassword")
+			return
+		}
+
 		err := goo.DB.Where(map[string]any{"username": req.Username}).First(&existUser).Error
 		if err != nil {
 			crud.RespFail(c, "FindNotUser, "+err.Error())
@@ -52,6 +62,16 @@ func UserRegisterHandler() gin.HandlerFunc {
 
 		if err := c.ShouldBindJSON(&req); err != nil {
 			crud.RespFail(c, "InvalidJsonData, "+err.Error())
+			return
+		}
+
+		if req.Username == "" {
+			crud.RespFail(c, "InvalidUsername")
+			return
+		}
+
+		if req.Password == "" {
+			crud.RespFail(c, "InvalidPassword")
 			return
 		}
 
