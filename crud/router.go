@@ -4,12 +4,10 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/qf0129/goo"
 )
 
 type RouterOption struct {
-	Methods    []string
-	DeletedKey string
+	Methods []string
 }
 
 func (o RouterOption) HasMethod(m string) bool {
@@ -24,9 +22,6 @@ func FilterRouterOption(options []RouterOption) RouterOption {
 
 	if len(option.Methods) == 0 {
 		option.Methods = []string{"GET", "POST", "PUT", "DELETE"}
-	}
-	if option.DeletedKey == "" {
-		option.DeletedKey = goo.Config.DeletedKey
 	}
 	return option
 }
@@ -47,7 +42,7 @@ func CreateRouter[T GormModel](group *gin.RouterGroup, options ...RouterOption) 
 		group.PUT(fmt.Sprintf("/%s/:%s", modelName, modelId), UpdateOneHandler[T](modelId))
 	}
 	if option.HasMethod("DELETE") {
-		group.DELETE(fmt.Sprintf("/%s/:%s", modelName, modelId), DeleteOneHandler[T](modelId, option.DeletedKey))
+		group.DELETE(fmt.Sprintf("/%s/:%s", modelName, modelId), DeleteOneHandler[T](modelId))
 	}
 }
 

@@ -47,14 +47,9 @@ func QueryOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 	}
 }
 
-func DeleteOneHandler[T GormModel](parentIdKey string, deletedKeys ...string) gin.HandlerFunc {
+func DeleteOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var deletedKey string
-		if len(deletedKeys) > 0 {
-			deletedKey = deletedKeys[0]
-		}
-
-		err := DeleteOne[T](c.Param(parentIdKey), deletedKey)
+		err := DeleteOne[T](c.Param(parentIdKey))
 		if err != nil {
 			if errMySQL, ok := err.(*mysql.MySQLError); ok {
 				switch errMySQL.Number {

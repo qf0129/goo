@@ -9,7 +9,6 @@
     "DbDatabase": "database",
 
 	"PrimaryKey":      "id",
-	"DeletedKey":      "",
 	"DefaultPageSize": 10,
     
     "AppHost": "",

@@ -18,7 +18,6 @@ type Configuration struct {
 	DbDatabase string
 
 	PrimaryKey      string
-	DeletedKey      string
 	DefaultPageSize int
 
 	AppHost    string
@@ -59,7 +58,6 @@ var Config = &Configuration{
 	DbDatabase: "test",
 
 	PrimaryKey:      "id",
-	DeletedKey:      "",
 	DefaultPageSize: 10,
 
 	AppHost:    "",

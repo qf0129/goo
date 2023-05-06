@@ -93,13 +93,8 @@ func UpdateOne[T GormModel](modelId any, params any) error {
 	return goo.DB.Model(new(T)).Where(map[string]any{goo.Config.PrimaryKey: modelId}).Updates(params).Error
 }
 
-func DeleteOne[T GormModel](modelId any, deletedKey string) error {
-	if deletedKey != "" {
-		if HasField[T](deletedKey) {
-			return UpdateOne[T](modelId, map[string]any{deletedKey: true})
-		}
-	}
-	return goo.DB.Delete(new(T), modelId).Error
+func DeleteOne[T GormModel](modelId any) error {
+	return goo.DB.Delete(new(T)).Where(map[string]any{goo.Config.PrimaryKey: modelId}).Error
 }
 
 func HasField[T GormModel](fieldKey string) bool {
