@@ -17,14 +17,15 @@ type Configuration struct {
 	DbPsd      string
 	DbDatabase string
 
+	PrimaryKey      string
+	DeletedKey      string
+	DefaultPageSize int
+
 	AppHost    string
 	AppPort    uint
 	AppMode    string
 	AppTimeout uint
 	LogLevel   string
-
-	PrimaryKey      string
-	DefaultPageSize int
 
 	// 加密算法密钥
 	SecretKey string
@@ -57,14 +58,15 @@ var Config = &Configuration{
 	DbPsd:      "root",
 	DbDatabase: "test",
 
+	PrimaryKey:      "id",
+	DeletedKey:      "",
+	DefaultPageSize: 10,
+
 	AppHost:    "",
 	AppPort:    8080,
 	AppMode:    "debug",
 	AppTimeout: 60,
 	LogLevel:   "debug",
-
-	PrimaryKey:      "id",
-	DefaultPageSize: 10,
 
 	SecretKey:        "Abcd@123",
 	TokenExpiredTime: 7200,

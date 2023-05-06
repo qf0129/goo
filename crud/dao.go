@@ -94,9 +94,14 @@ func UpdateOne[T GormModel](modelId any, params any) error {
 }
 
 func DeleteOne[T GormModel](modelId any, deletedKey string) error {
-	if deletedKey == "" {
-		return goo.DB.Delete(new(T), modelId).Error
-	} else {
-		return UpdateOne[T](modelId, map[string]any{deletedKey: true})
+	if deletedKey != "" {
+		if HasField[T](deletedKey) {
+			return UpdateOne[T](modelId, map[string]any{deletedKey: true})
+		}
 	}
+	return goo.DB.Delete(new(T), modelId).Error
+}
+
+func HasField[T GormModel](fieldKey string) bool {
+	return goo.DB.Model(new(T)).Select(fieldKey).Take(new(T)).Error == nil
 }

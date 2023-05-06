@@ -7,6 +7,10 @@
     "DbUser": "root",
     "DbPsd": "root",
     "DbDatabase": "database",
+
+	"PrimaryKey":      "id",
+	"DeletedKey":      "",
+	"DefaultPageSize": 10,
     
     "AppHost": "",
     "AppPort": 8080,
@@ -14,8 +18,6 @@
     "AppTimeout": 10,
     "LogLevel": "debug",
     
-	"PrimaryKey":      "id",
-	"DefaultPageSize": 10,
     "SecretKey":"Abcd@123",
     "TokenExpiredTime": 3600
 }

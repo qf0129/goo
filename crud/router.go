@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/qf0129/goo"
 )
 
 type RouterOption struct {
@@ -23,6 +24,9 @@ func FilterRouterOption(options []RouterOption) RouterOption {
 
 	if len(option.Methods) == 0 {
 		option.Methods = []string{"GET", "POST", "PUT", "DELETE"}
+	}
+	if option.DeletedKey == "" {
+		option.DeletedKey = goo.Config.DeletedKey
 	}
 	return option
 }
