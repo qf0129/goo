@@ -21,10 +21,14 @@ func PraseFilterOptions[T GormModel](c *gin.Context) ([]QueryOption, error) {
 		if !arrays.HasStrItem(FIXED_OPTIONS, k) && arrays.HasStrItem(fields, k) {
 			kList := strings.Split(k, ":")
 			if len(kList) == 2 {
-				k, operater := kList[0], kList[1]
-				options = append(options, GetOptionWithOperater(k, operater, v[0]))
+				kk, operater := kList[0], kList[1]
+				if arrays.HasStrItem(fields, kk) {
+					options = append(options, GetOptionWithOperater(kk, operater, v[0]))
+				}
 			} else {
-				options = append(options, OptionFilterBy(k, v))
+				if arrays.HasStrItem(fields, k) {
+					options = append(options, OptionFilterBy(k, v))
+				}
 			}
 		}
 	}
