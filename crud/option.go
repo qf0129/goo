@@ -18,7 +18,7 @@ func PraseFilterOptions[T GormModel](c *gin.Context) ([]QueryOption, error) {
 
 	var fields = structs.GetJsonFields(new(T))
 	for k, v := range c.Request.URL.Query() {
-		if !arrays.HasStrItem(FIXED_OPTIONS, k) && arrays.HasStrItem(fields, k) {
+		if !arrays.HasStrItem(FIXED_OPTIONS, k) {
 			kList := strings.Split(k, ":")
 			if len(kList) == 2 {
 				kk, operater := kList[0], kList[1]
