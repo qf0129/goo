@@ -9,7 +9,7 @@ func HasStrItem(arr []string, item any) bool {
 	return false
 }
 
-func HasIntItem(arr []string, item any) bool {
+func HasIntItem(arr []int, item any) bool {
 	for _, element := range arr {
 		if item == element {
 			return true
