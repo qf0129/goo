@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/qf0129/goo/arrays"
+	"github.com/qf0129/goo/pkg/arrays"
 )
 
 type RouterOption struct {
