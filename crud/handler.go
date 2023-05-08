@@ -116,7 +116,7 @@ func QueryManyHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 			return
 		}
 
-		filterOptions, err := PraseFilterOptions(c)
+		filterOptions, err := PraseFilterOptions[T](c)
 		if err != nil {
 			RespFail(c, "FilterOptionError, "+err.Error())
 			return

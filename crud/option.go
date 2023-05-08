@@ -6,16 +6,19 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/qf0129/goo/pkg/arrays"
+	"github.com/qf0129/goo/pkg/structs"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-func PraseFilterOptions(c *gin.Context) ([]QueryOption, error) {
+func PraseFilterOptions[T GormModel](c *gin.Context) ([]QueryOption, error) {
 	var options []QueryOption
+
+	var fields = structs.GetJsonFields(new(T))
 	for k, v := range c.Request.URL.Query() {
-		if !arrays.HasStrItem(FIXED_OPTIONS, k) {
+		if !arrays.HasStrItem(FIXED_OPTIONS, k) && arrays.HasStrItem(fields, k) {
 			kList := strings.Split(k, ":")
 			if len(kList) == 2 {
 				k, operater := kList[0], kList[1]
