@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/qf0129/goo/arrays"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"gorm.io/gorm"
@@ -14,7 +15,7 @@ import (
 func PraseFilterOptions(c *gin.Context) ([]QueryOption, error) {
 	var options []QueryOption
 	for k, v := range c.Request.URL.Query() {
-		if !ArrHasStr(FIXED_OPTIONS, k) {
+		if !arrays.HasStrItem(FIXED_OPTIONS, k) {
 			kList := strings.Split(k, ":")
 			if len(kList) == 2 {
 				k, operater := kList[0], kList[1]
@@ -30,7 +31,7 @@ func PraseFilterOptions(c *gin.Context) ([]QueryOption, error) {
 func PraseJsonFilterOptions(c *gin.Context, jsonFieldName string) ([]QueryOption, error) {
 	var options []QueryOption
 	for k := range c.Request.URL.Query() {
-		if !ArrHasStr(FIXED_OPTIONS, k) {
+		if !arrays.HasStrItem(FIXED_OPTIONS, k) {
 			options = append(options, OptionJsonFilterBy(jsonFieldName, k, c.Query(k)))
 		}
 	}

@@ -9,14 +9,14 @@ import (
 	"golang.org/x/text/language"
 )
 
-func ArrHasStr(arr []string, target string) bool {
-	for _, element := range arr {
-		if target == element {
-			return true
-		}
-	}
-	return false
-}
+// func ArrHasStr(arr []string, target string) bool {
+// 	for _, element := range arr {
+// 		if target == element {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
 func GetModelNameLower(obj any) string {
 	reflectType := reflect.TypeOf(obj)

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/qf0129/goo/arrays"
 )
 
 type RouterOption struct {
@@ -11,7 +12,7 @@ type RouterOption struct {
 }
 
 func (o RouterOption) HasMethod(m string) bool {
-	return ArrHasStr(o.Methods, m)
+	return arrays.HasStrItem(o.Methods, m)
 }
 
 func FilterRouterOption(options []RouterOption) RouterOption {
