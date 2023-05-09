@@ -7,14 +7,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func QueryAll[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any, error) {
+func QueryAll[T GormModel](fixed FixedOption, filterOptions []QueryOption) ([]T, error) {
 	fixed.ClosePaging = true
-	return QueryMany[T](fixed, filterOptions)
+	ret, err := QueryMany[T](fixed, filterOptions)
+	return ret.([]T), err
 }
 
-func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any, error) {
+func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (PageBody, error) {
 	fixed.ClosePaging = false
-	return QueryMany[T](fixed, filterOptions)
+	ret, err := QueryMany[T](fixed, filterOptions)
+	return ret.(PageBody), err
 }
 
 func QueryMany[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any, error) {
