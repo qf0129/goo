@@ -43,6 +43,48 @@ func (c *Configuration) Get(k string) any {
 	return c.Custom[k]
 }
 
+func (c *Configuration) GetStr(k string) (r string) {
+	if val := c.Custom[k]; val != nil {
+		r, _ = val.(string)
+	}
+	return
+}
+
+func (c *Configuration) GetInt(k string) (r int) {
+	if val := c.Custom[k]; val != nil {
+		r, _ = val.(int)
+	}
+	return
+}
+
+func (c *Configuration) GetInt64(k string) (r int64) {
+	if val := c.Custom[k]; val != nil {
+		r, _ = val.(int64)
+	}
+	return
+}
+
+func (c *Configuration) GetUint(k string) (r uint) {
+	if val := c.Custom[k]; val != nil {
+		r, _ = val.(uint)
+	}
+	return
+}
+
+func (c *Configuration) GetBool(k string) (r bool) {
+	if val := c.Custom[k]; val != nil {
+		r, _ = val.(bool)
+	}
+	return
+}
+
+func (c *Configuration) GetFloat64(k string) (r float64) {
+	if val := c.Custom[k]; val != nil {
+		r, _ = val.(float64)
+	}
+	return
+}
+
 func (c *Configuration) Remove(k string) {
 	delete(c.Custom, k)
 }
