@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/qf0129/goo/pkg/arrays"
+	"github.com/qf0129/goo/pkg/strs"
 )
 
 type RouterOption struct {
@@ -28,7 +29,7 @@ func FilterRouterOption(options []RouterOption) RouterOption {
 }
 
 func CreateRouter[T GormModel](group *gin.RouterGroup, options ...RouterOption) {
-	modelName := GetModelNameLower(new(T))
+	modelName := strs.GetModelNameLower(new(T))
 	modelId := modelName + "_id"
 
 	option := FilterRouterOption(options)
@@ -48,9 +49,9 @@ func CreateRouter[T GormModel](group *gin.RouterGroup, options ...RouterOption) 
 }
 
 func CreateChildRouter[P GormModel, C GormModel](group *gin.RouterGroup, options ...RouterOption) {
-	parentName := GetModelNameLower(new(P))
+	parentName := strs.GetModelNameLower(new(P))
 	parentId := parentName + "_id"
-	childName := GetModelNameLower(new(C))
+	childName := strs.GetModelNameLower(new(C))
 	// childId := childName + "_id"
 
 	option := FilterRouterOption(options)

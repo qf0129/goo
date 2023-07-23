@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
+	"github.com/qf0129/goo"
 )
 
 func CreateOneHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
@@ -13,29 +14,29 @@ func CreateOneHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 		if len(parentIdKeys) > 0 {
 			var params map[string]any
 			if err := c.ShouldBindJSON(&params); err != nil {
-				RespFail(c, "InvalidData, "+err.Error())
+				goo.RespFail(c, "InvalidData, "+err.Error())
 				return
 			}
 			params[parentIdKeys[0]] = c.Param(parentIdKeys[0])
 
 			err := CreateOne[T](params)
 			if err != nil {
-				RespFail(c, "CreateOneFailed, "+err.Error())
+				goo.RespFail(c, "CreateOneFailed, "+err.Error())
 				return
 			}
-			RespOk(c, &params)
+			goo.RespOk(c, &params)
 		} else {
 			var model T
 			if err := c.ShouldBindJSON(&model); err != nil {
-				RespFail(c, "InvalidData, "+err.Error())
+				goo.RespFail(c, "InvalidData, "+err.Error())
 				return
 			}
 			err := CreateOne[T](&model)
 			if err != nil {
-				RespFail(c, "CreateOneFailed, "+err.Error())
+				goo.RespFail(c, "CreateOneFailed, "+err.Error())
 				return
 			}
-			RespOk(c, &model)
+			goo.RespOk(c, &model)
 		}
 	}
 }
@@ -43,7 +44,7 @@ func CreateOneHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 func QueryOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ret, _ := QueryOne[T](c.Param(parentIdKey), c.Query(OPTION_PRELOAD))
-		RespOk(c, ret)
+		goo.RespOk(c, ret)
 	}
 }
 
@@ -54,15 +55,15 @@ func DeleteOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 			if errMySQL, ok := err.(*mysql.MySQLError); ok {
 				switch errMySQL.Number {
 				case 1451:
-					RespFail(c, "无法删除有关联数据的项")
+					goo.RespFail(c, "无法删除有关联数据的项")
 					return
 				}
 			} else {
-				RespFail(c, "DeleteOneFailed, "+err.Error())
+				goo.RespFail(c, "DeleteOneFailed, "+err.Error())
 				return
 			}
 		}
-		RespOk(c, true)
+		goo.RespOk(c, true)
 	}
 }
 
@@ -71,13 +72,13 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 		var existModel T
 		err := QueryOneTarget[T](c.Param(parentIdKey), &existModel)
 		if err != nil {
-			RespFail(c, "QueryOneTargetFailed, "+err.Error())
+			goo.RespFail(c, "QueryOneTargetFailed, "+err.Error())
 			return
 		}
 
 		var objMap map[string]any
 		if err = c.ShouldBindJSON(&objMap); err != nil {
-			RespFail(c, "InvalidData, "+err.Error())
+			goo.RespFail(c, "InvalidData, "+err.Error())
 			return
 		}
 
@@ -88,7 +89,7 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 			if valKind == reflect.Map || valKind == reflect.Slice {
 				bytes, err := json.Marshal(v)
 				if err != nil {
-					RespFail(c, "InvalidJsonValue, "+err.Error())
+					goo.RespFail(c, "InvalidJsonValue, "+err.Error())
 					return
 				}
 				objMap[k] = string(bytes)
@@ -97,13 +98,13 @@ func UpdateOneHandler[T GormModel](parentIdKey string) gin.HandlerFunc {
 
 		err = UpdateOne[T](c.Param(parentIdKey), &objMap)
 		if err != nil {
-			RespFail(c, "UpdateOneFailed, "+err.Error())
+			goo.RespFail(c, "UpdateOneFailed, "+err.Error())
 			return
 		}
 
 		var newModel T
 		QueryOneTarget[T](c.Param(parentIdKey), &newModel)
-		RespOk(c, &newModel)
+		goo.RespOk(c, &newModel)
 	}
 }
 
@@ -112,13 +113,13 @@ func QueryManyHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 		var fixedOptions FixedOption
 		err := c.ShouldBind(&fixedOptions)
 		if err != nil {
-			RespFail(c, "FixedOptionError, "+err.Error())
+			goo.RespFail(c, "FixedOptionError, "+err.Error())
 			return
 		}
 
 		filterOptions, err := PraseFilterOptions[T](c)
 		if err != nil {
-			RespFail(c, "FilterOptionError, "+err.Error())
+			goo.RespFail(c, "FilterOptionError, "+err.Error())
 			return
 		}
 
@@ -129,9 +130,9 @@ func QueryManyHandler[T GormModel](parentIdKeys ...string) gin.HandlerFunc {
 
 		ret, err := QueryMany[T](fixedOptions, filterOptions)
 		if err != nil {
-			RespFail(c, "QueryFailed, "+err.Error())
+			goo.RespFail(c, "QueryFailed, "+err.Error())
 			return
 		}
-		RespOk(c, ret)
+		goo.RespOk(c, ret)
 	}
 }

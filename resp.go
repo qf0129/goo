@@ -1,4 +1,4 @@
-package crud
+package goo
 
 import (
 	"net/http"
@@ -6,17 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RespBody struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data any    `json:"data"`
-}
-
 type PageBody struct {
 	List     any   `json:"list"`
 	Page     int   `json:"page"`
 	PageSize int   `json:"page_size"`
 	Total    int64 `json:"total"`
+}
+
+type RespBody struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Data any    `json:"data"`
 }
 
 func Resp(c *gin.Context, httpStatus int, body RespBody) {

@@ -13,10 +13,10 @@ func QueryAll[T GormModel](fixed FixedOption, filterOptions []QueryOption) ([]T,
 	return ret.([]T), err
 }
 
-func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (PageBody, error) {
+func QueryPage[T GormModel](fixed FixedOption, filterOptions []QueryOption) (goo.PageBody, error) {
 	fixed.ClosePaging = false
 	ret, err := QueryMany[T](fixed, filterOptions)
-	return ret.(PageBody), err
+	return ret.(goo.PageBody), err
 }
 
 func QueryMany[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any, error) {
@@ -55,7 +55,7 @@ func QueryMany[T GormModel](fixed FixedOption, filterOptions []QueryOption) (any
 			logrus.Error(ret.Error)
 			return nil, ret.Error
 		} else {
-			return PageBody{
+			return goo.PageBody{
 				List:     &items,
 				Page:     fixed.Page,
 				PageSize: fixed.PageSize,
