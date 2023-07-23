@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/qf0129/goo"
 	"github.com/qf0129/goo/crud"
-	"github.com/qf0129/goo/simple"
+	"github.com/qf0129/goo/tmpl"
 )
 
 type Product struct {
@@ -19,7 +19,7 @@ func main() {
 	goo.MigrateModels(&Product{})
 
 	app := goo.InitGin()
-	app.Use(simple.CorsMiddleware())
+	app.Use(tmpl.CorsMiddleware())
 
 	apiGroup := app.Group("/api")
 	crud.CreateRouter[Product](apiGroup)
